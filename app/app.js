@@ -1,457 +1,416 @@
-// app.js
-// Declare all DOM element variables
-let motorcycleGrid, motorcycleSelect, markSoldBtn, searchInput, filterButtons;
-let modal, closeModal, transactionsList, totalItems;
-let addProductBtn, addProductModal, closeAddModal, cancelAddBtn, addProductForm, notificationContainer;
+   // Data for generating varied product data
+        const makes = ["Yamaha", "Honda", "Suzuki", "Kawasaki", "BMW", "Ducati", "Harley-Davidson", "KTM", "Triumph"];
+        const models = {
+            "Yamaha": ["MT-07", "R1", "Tenere 700", "XSR900"],
+            "Honda": ["CBR500R", "Africa Twin", "Rebel 500", "CB300R"],
+            "Suzuki": ["V-Strom 650", "GSX-R1000", "SV650"],
+            "Kawasaki": ["Ninja 400", "Z900", "Versys 650"],
+            "BMW": ["R 1250 GS", "S 1000 RR", "F 850 GS"],
+            "Ducati": ["Monster", "Panigale V4", "Scrambler"],
+            "Harley-Davidson": ["Sportster S", "Street Glide", "Fat Boy"],
+            "KTM": ["390 Duke", "1290 Super Adventure", "890 Adventure"],
+            "Triumph": ["Street Triple", "Bonneville T120", "Tiger 900"]
+        };
+        const years = [2020, 2021, 2022, 2023, 2024];
+        const conditions = ["New", "Used", "Refurbished"];
+        const locations = ["Nairobi, Kenya", "Mombasa, Kenya", "Kisumu, Kenya", "Nakuru, Kenya", "Eldoret, Kenya"];
+        const descriptions = [
+            "A fantastic bike for both city commuting and long-distance touring. Excellent condition with low mileage and a full service history.",
+            "Well-maintained, low-mileage bike with a full-service history. Ready to ride and perfect for both beginners and experienced riders.",
+            "Sporty and agile, perfect for a beginner or an experienced rider looking for a thrill. Recent service and new tires installed.",
+            "Adventure-ready with all the bells and whistles. Comes with panniers and a top case. Great for off-road adventures.",
+            "Classic styling meets modern performance. A timeless look with a powerful engine. Well-maintained with no accidents.",
+            "Newly serviced and ready to hit the road. All fluids changed and new tires installed. Great value for money."
+        ];
+        const statuses = ["available", "sold"];
+        const colors = ["Black", "Red", "Blue", "Silver", "White", "Green", "Yellow"];
 
-// Initialize the application
-function init() {
-    // Initialize DOM references
-    motorcycleGrid = document.getElementById('motorcycle-grid');
-    motorcycleSelect = document.getElementById('motorcycle-select');
-    markSoldBtn = document.getElementById('mark-sold-btn');
-    searchInput = document.getElementById('search-input');
-    filterButtons = document.querySelectorAll('.filter-btn');
-    modal = document.getElementById('motorcycle-modal');
-    closeModal = document.getElementById('close-modal');
-    transactionsList = document.getElementById('transactions-list');
-    totalItems = document.getElementById('total-items');
-    addProductBtn = document.getElementById('add-product-btn');
-    addProductModal = document.getElementById('add-product-modal');
-    closeAddModal = document.getElementById('close-add-modal');
-    cancelAddBtn = document.getElementById('cancel-add');
-    addProductForm = document.getElementById('add-product-form');
-    notificationContainer = document.getElementById('notification-container');
+        // A function to get a random item from an array
+        const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
-    renderMotorcycles();
-    populateMotorcycleSelect();
-    renderTransactions();
-    updateTotalItems();
-    setupEventListeners();
-}
+        // The array to hold all the motorcycle products
+        const motorcycles = [];
+        const numberOfProducts = 28; // Products
 
-// Render motorcycles to the grid
-function renderMotorcycles(filter = 'all', searchTerm = '') {
-    if (!motorcycleGrid) return;
-    
-    motorcycleGrid.innerHTML = '';
-    
-    inventoryData.motorcycles.forEach(moto => {
-        // Apply filters
-        if (filter === 'available' && moto.status !== 'Available') return;
-        if (filter === 'sold' && moto.status !== 'Sold') return;
-        
-        // Apply search
-        const searchText = `${moto.make} ${moto.model} ${moto.year}`.toLowerCase();
-        if (searchTerm && !searchText.includes(searchTerm.toLowerCase())) return;
-        
-        const card = document.createElement('div');
-        card.className = `bg-white rounded-xl overflow-hidden card-shadow relative fade-in ${moto.status === 'Sold' ? 'sold' : ''}`;
-        
-        card.innerHTML = `
-            <div class="relative">
-                <div class="h-48 bg-gray-200 overflow-hidden">
-                    <img src="${moto.imageUrl}" alt="${moto.make} ${moto.model}" class="w-full h-full object-cover">
-                </div>
-                <div class="sold-overlay">
-                    <span class="bg-red-600 text-white px-4 py-2 rounded-lg text-lg font-bold">SOLD</span>
-                </div>
-                <div class="absolute top-3 right-3 status-badge ${moto.status === 'Available' ? 'bg-green-500' : 'bg-red-500'} text-white px-3 py-1 rounded-full text-xs font-bold">
-                    ${moto.status}
-                </div>
-            </div>
-            <div class="p-5">
-                <h3 class="text-xl font-bold text-dark mb-1">${moto.make} ${moto.model}</h3>
-                <p class="text-gray-600 mb-3">${moto.year} • ${moto.engineSizeCC}cc</p>
-                
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-primary font-bold text-xl">KES ${moto.priceKES.toLocaleString()}</span>
-                    <span class="text-sm bg-gray-100 px-2 py-1 rounded">${moto.condition}</span>
-                </div>
-                
-                <div class="flex justify-between items-center">
-                    <button class="view-details-btn text-secondary font-medium hover:text-primary transition" data-id="${moto.motorcycleId}">
-                        <i class="fas fa-info-circle mr-1"></i> View Details
-                    </button>
-                    ${moto.status === 'Available' ? 
-                        `<button class="quick-sell-btn bg-accent hover:bg-yellow-600 text-white px-3 py-2 rounded-lg transition font-medium" data-id="${moto.motorcycleId}">
-                            <i class="fas fa-tag mr-1"></i> Quick Sell
-                        </button>` : 
-                        ''
-                    }
-                </div>
-            </div>
-        `;
-        
-        motorcycleGrid.appendChild(card);
-    });
-}
+        for (let i = 1; i <= numberOfProducts; i++) {
+            const make = getRandomItem(makes);
+            const model = getRandomItem(models[make]);
+            const year = getRandomItem(years);
+            const condition = getRandomItem(conditions);
+            const status = getRandomItem(statuses);
+            const isLocal = Math.random() > 0.5;
+            const price = Math.floor(Math.random() * (800000 - 450000 + 1) + 450000);
+            const engineSize = Math.floor(Math.random() * (1500 - 250 + 1) + 250);
+            const color = getRandomItem(colors);
+            const mileage = Math.floor(Math.random() * (50000 - 500 + 1) + 500);
 
-// Populate the motorcycle select dropdown
-function populateMotorcycleSelect() {
-    if (!motorcycleSelect) return;
-    
-    motorcycleSelect.innerHTML = '<option value="">Choose a motorcycle</option>';
-    
-    inventoryData.motorcycles.forEach(moto => {
-        if (moto.status === 'Available') {
-            const option = document.createElement('option');
-            option.value = moto.motorcycleId;
-            option.textContent = `${moto.make} ${moto.model} (${moto.year}) - KES ${moto.priceKES.toLocaleString()}`;
-            motorcycleSelect.appendChild(option);
+            // Generate multiple images for each product
+            const images = [];
+            const imageCount = Math.floor(Math.random() * 3) + 3; // 3-5 images
+            for (let j = 1; j <= imageCount; j++) {
+                images.push(`https://placehold.co/600x400/000000/FFFFFF?text=${make}+${model}+${j}`);
+            }
+
+            const motorcycle = {
+                id: i,
+                make: make,
+                model: model,
+                year: year,
+                engineSize: engineSize,
+                price: price,
+                condition: condition,
+                color: color,
+                mileage: mileage,
+                location: getRandomItem(locations),
+                description: getRandomItem(descriptions),
+                status: status,
+                isLocal: isLocal,
+                images: images,
+                // Add service history for some products to add variety
+                serviceHistory: (Math.random() > 0.3) ? [
+                    { date: `202${Math.floor(Math.random() * 4)}-0${Math.floor(Math.random() * 9) + 1}-15`, service: "Routine maintenance", cost: Math.floor(Math.random() * (8000 - 2000 + 1) + 2000) },
+                    { date: `202${Math.floor(Math.random() * 4)}-0${Math.floor(Math.random() * 9) + 1}-20`, service: "Brake service", cost: Math.floor(Math.random() * (6000 - 1500 + 1) + 1500) },
+                    { date: `202${Math.floor(Math.random() * 4)}-0${Math.floor(Math.random() * 9) + 1}-10`, service: "Tire replacement", cost: Math.floor(Math.random() * (15000 - 5000 + 1) + 5000) }
+                ] : []
+            };
+            motorcycles.push(motorcycle);
         }
-    });
-}
 
-// Render recent transactions
-function renderTransactions() {
-    if (!transactionsList) return;
-    
-    transactionsList.innerHTML = '';
-    
-    // Sort transactions by date (newest first)
-    const sortedTransactions = [...inventoryData.transactions].sort((a, b) => 
-        new Date(b.dateOfSale) - new Date(a.dateOfSale)
-    );
-    
-    sortedTransactions.slice(0, 3).forEach(trans => {
-        const moto = inventoryData.motorcycles.find(m => m.motorcycleId === trans.motorcycleId);
-        if (!moto) return;
-        
-        const transEl = document.createElement('div');
-        transEl.className = 'mb-4 pb-4 border-b border-gray-200 last:mb-0 last:pb-0 last:border-0';
-        
-        transEl.innerHTML = `
-            <div class="flex justify-between items-start">
-                <div>
-                    <h4 class="font-semibold">${moto.make} ${moto.model}</h4>
-                    <p class="text-sm text-gray-600">${trans.dateOfSale}</p>
+        // Filter out sold products
+        const availableMotorcycles = motorcycles.filter(motorcycle => motorcycle.status === 'available');
+
+        // DOM elements
+        const productsContainer = document.getElementById('products-container');
+        const viewAllBtn = document.getElementById('view-all-btn');
+        const productModal = document.getElementById('productModal');
+        const closeModal = document.getElementById('closeModal');
+        const mainImage = document.getElementById('mainImage');
+        const thumbnailsContainer = document.getElementById('thumbnailsContainer');
+        const productTitle = document.getElementById('productTitle');
+        const productPrice = document.getElementById('productPrice');
+        const productDescription = document.getElementById('productDescription');
+        const productYear = document.getElementById('productYear');
+        const productEngine = document.getElementById('productEngine');
+        const productCondition = document.getElementById('productCondition');
+        const productLocation = document.getElementById('productLocation');
+        const serviceHistory = document.getElementById('serviceHistory');
+        const whatsappBtn = document.getElementById('whatsappBtn');
+        const statusBadge = document.getElementById('statusBadge');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const filterButtons = document.querySelectorAll('.filter-button');
+
+        /**
+         * Renders a single product card.
+         * @param {object} product - The product object to render.
+         * @returns {string} The HTML string for the product card.
+         */
+        const createProductCard = (product) => {
+            return `
+                <div class="bg-white rounded-lg overflow-hidden card-shadow cursor-pointer product-card" data-id="${product.id}" data-brand="${product.make}">
+                    <div class="relative">
+                        <img src="${product.images[0]}" alt="${product.make} ${product.model}" class="w-full h-40 md:h-48 object-cover">
+                        <span class="absolute top-2 right-2 md:top-3 md:right-3 text-xs font-semibold px-2.5 py-1 rounded-full bg-green-100 text-green-800">
+                            Available
+                        </span>
+                    </div>
+                    <div class="p-3 md:p-4">
+                        <h3 class="text-base md:text-lg lg:text-xl font-semibold text-gray-800">${product.make} ${product.model}</h3>
+                        <p class="text-gray-600 text-xs md:text-sm mt-1">${product.year} | ${product.engineSize}cc | ${product.color}</p>
+                        <p class="text-green-600 font-bold text-base md:text-lg mt-2">Ksh ${product.price.toLocaleString()}</p>
+                        <div class="flex justify-between mt-3 md:mt-4">
+                            <span class="inline-block text-xs font-medium px-2.5 py-1 rounded-full ${product.condition === 'New' ? 'bg-blue-100 text-blue-800' : product.condition === 'Used' ? 'bg-gray-100 text-gray-800' : 'bg-purple-100 text-purple-800'}">
+                                ${product.condition}
+                            </span>
+                            <span class="text-xs text-gray-500">
+                                <i class="fas fa-road mr-1"></i>${product.mileage.toLocaleString()} km
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <span class="text-success font-bold">KES ${trans.salePriceKES.toLocaleString()}</span>
-            </div>
-            <p class="text-sm mt-2"><span class="font-medium">Buyer:</span> ${trans.shipping_details.deliveryAddress}</p>
-        `;
-        
-        transactionsList.appendChild(transEl);
-    });
-}
+            `;
+        };
 
-// Update total items counter
-function updateTotalItems() {
-    if (!totalItems) return;
-    totalItems.textContent = inventoryData.motorcycles.length;
-}
-
-// Show motorcycle details in modal
-function showMotorcycleDetails(id) {
-    const moto = inventoryData.motorcycles.find(m => m.motorcycleId === id);
-    
-    if (moto && modal) {
-        document.getElementById('modal-title').textContent = `${moto.make} ${moto.model}`;
-        document.getElementById('modal-image').innerHTML = `<img src="${moto.imageUrl}" alt="${moto.make} ${moto.model}" class="w-full h-full object-cover">`;
-        document.getElementById('modal-year').textContent = moto.year;
-        document.getElementById('modal-engine').textContent = `${moto.engineSizeCC}cc`;
-        document.getElementById('modal-condition').textContent = moto.condition;
-        document.getElementById('modal-location').textContent = moto.location;
-        document.getElementById('modal-price').textContent = `KES ${moto.priceKES.toLocaleString()}`;
-        document.getElementById('modal-status').textContent = moto.status;
-        document.getElementById('modal-description').textContent = moto.description;
-        
-        // Service history
-        const serviceHistoryContainer = document.getElementById('modal-service-history');
-        if (serviceHistoryContainer) {
-            serviceHistoryContainer.innerHTML = '';
+        /**
+         * Renders products into the container.
+         * @param {array} productsArray - The array of products to display.
+         */
+        const renderProducts = (productsArray) => {
+            productsContainer.innerHTML = ''; // Clear existing products
+            productsArray.forEach(product => {
+                productsContainer.innerHTML += createProductCard(product);
+            });
             
-            if (moto.service_history.length === 0) {
-                serviceHistoryContainer.innerHTML = '<p class="text-gray-600 italic">No service history recorded</p>';
-            } else {
-                moto.service_history.forEach(service => {
+            // Add event listeners to product cards
+            document.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const productId = parseInt(card.getAttribute('data-id'));
+                    const product = availableMotorcycles.find(p => p.id === productId);
+                    if (product) {
+                        openProductModal(product);
+                    }
+                });
+            });
+        };
+
+        /**
+         * Opens the product modal with product details
+         * @param {object} product - The product to display
+         */
+        const openProductModal = (product) => {
+            // Set main product details
+            productTitle.textContent = `${product.make} ${product.model}`;
+            productPrice.textContent = `Ksh ${product.price.toLocaleString()}`;
+            productDescription.textContent = product.description;
+            productYear.textContent = product.year;
+            productEngine.textContent = `${product.engineSize}cc`;
+            productCondition.textContent = product.condition;
+            productLocation.textContent = product.location;
+            
+            // Set status badge (always available now)
+            statusBadge.textContent = 'Available';
+            statusBadge.className = `status-badge bg-green-100 text-green-800`;
+            
+            // Set main image
+            mainImage.src = product.images[0];
+            mainImage.alt = `${product.make} ${product.model}`;
+            
+            // Create thumbnails
+            thumbnailsContainer.innerHTML = '';
+            product.images.forEach((img, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = `thumbnail ${index === 0 ? 'active' : ''}`;
+                thumbnail.innerHTML = `<img src="${img}" alt="Thumbnail ${index + 1}">`;
+                thumbnail.addEventListener('click', () => {
+                    // Update main image
+                    mainImage.src = img;
+                    
+                    // Update active thumbnail
+                    document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+                    thumbnail.classList.add('active');
+                });
+                thumbnailsContainer.appendChild(thumbnail);
+            });
+            
+            // Set service history
+            serviceHistory.innerHTML = '';
+            if (product.serviceHistory.length > 0) {
+                product.serviceHistory.forEach(service => {
                     const serviceEl = document.createElement('div');
-                    serviceEl.className = 'mb-3 pb-3 border-b border-gray-100 last:mb-0 last:pb-0 last:border-0';
+                    serviceEl.className = 'service-item';
                     serviceEl.innerHTML = `
                         <div class="flex justify-between">
-                            <span class="font-medium">${service.serviceType}</span>
-                            <span class="text-gray-600">${service.date}</span>
+                            <span class="font-medium">${service.service}</span>
+                            <span class="text-blue-600">Ksh ${service.cost.toLocaleString()}</span>
                         </div>
-                        <p class="text-sm text-gray-700 mt-1">${service.notes}</p>
+                        <div class="text-sm text-gray-500">${service.date}</div>
                     `;
-                    serviceHistoryContainer.appendChild(serviceEl);
+                    serviceHistory.appendChild(serviceEl);
                 });
+            } else {
+                serviceHistory.innerHTML = '<p class="text-gray-500">No service history available</p>';
             }
-        }
-        
-        modal.classList.remove('hidden');
-        
-        // Setup service toggle for this modal instance
-        const serviceToggle = document.querySelector('.service-toggle');
-        if (serviceToggle) {
-            serviceToggle.onclick = function() {
-                const container = document.getElementById('modal-service-history');
-                if (!container) return;
-                
-                container.classList.toggle('active');
-                
-                const icon = this.querySelector('i');
-                if (icon) {
-                    if (container.classList.contains('active')) {
-                        icon.className = 'fas fa-chevron-up ml-2 text-sm';
-                    } else {
-                        icon.className = 'fas fa-chevron-down ml-2 text-sm';
-                    }
-                }
-            };
-        }
-    }
-}
+            
+            // Set WhatsApp button
+            const phoneNumber = "254712345678"; // Replace with your number
+            const message = `I'm interested in the ${product.make} ${product.model} (${product.year}) for Ksh ${product.price}. Product ID: ${product.id}`;
+            whatsappBtn.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Show modal
+            productModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        };
 
-// Mark a motorcycle as sold
-function markAsSold(motoId, salePrice, buyerName, buyerEmail) {
-    const motoIndex = inventoryData.motorcycles.findIndex(m => m.motorcycleId === motoId);
-    
-    if (motoIndex !== -1) {
-        // Update motorcycle status
-        inventoryData.motorcycles[motoIndex].status = 'Sold';
-        
-        // Create a new transaction
-        const newTransaction = {
-            transactionId: `trans-${(inventoryData.transactions.length + 1).toString().padStart(3, '0')}`,
-            motorcycleId: motoId,
-            sellerId: "sell-003",
-            buyerId: "cust-003",
-            salePriceKES: salePrice,
-            dateOfSale: new Date().toISOString().split('T')[0],
-            status: "Completed",
-            shipping_details: {
-                deliveryAddress: "To be arranged",
-                shippingProvider: "TBD",
-                trackingNumber: "TBD",
-                deliveryDate: "TBD"
+        /**
+         * Filters products by brand
+         * @param {string} brand - The brand to filter by
+         */
+        const filterByBrand = (brand) => {
+            if (brand === 'all') {
+                renderProducts(availableMotorcycles.slice(0, 8));
+                document.querySelector('#Motorcycles h2').textContent = "Hot Motorcycle Deals";
+            } else {
+                const filtered = availableMotorcycles.filter(product => product.make === brand);
+                renderProducts(filtered);
+                document.querySelector('#Motorcycles h2').textContent = `${brand} Motorcycles`;
             }
         };
-        
-        inventoryData.transactions.unshift(newTransaction);
-        
-        // Update UI
-        renderMotorcycles();
-        populateMotorcycleSelect();
-        renderTransactions();
-        updateTotalItems();
-        
-        // Reset form
-        motorcycleSelect.value = '';
-        document.getElementById('sale-price').value = '';
-        document.getElementById('buyer-name').value = '';
-        document.getElementById('buyer-email').value = '';
-        
-        // Show success notification
-        showNotification(`Success! ${inventoryData.motorcycles[motoIndex].make} ${inventoryData.motorcycles[motoIndex].model} has been marked as sold.`, 'success');
-    }
-}
 
-// Add a new motorcycle
-function addNewMotorcycle(formData) {
-    // Generate unique ID
-    const newId = `moto-${(inventoryData.motorcycles.length + 1).toString().padStart(3, '0')}`;
-    
-    // Create new motorcycle object
-    const newMotorcycle = {
-        motorcycleId: newId,
-        make: formData.make,
-        model: formData.model,
-        year: parseInt(formData.year),
-        engineSizeCC: parseInt(formData.engineSize),
-        priceKES: parseInt(formData.price),
-        condition: formData.condition,
-        isLocal: formData.isLocal === 'on',
-        status: "Available",
-        location: formData.location,
-        description: formData.description,
-        imageUrl: formData.imageUrl || "https://images.unsplash.com/photo-1606220588910-8a3d4cee63f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&h=400&q=80",
-        service_history: []
-    };
-    
-    // Add to inventory
-    inventoryData.motorcycles.push(newMotorcycle);
-    
-    // Update UI
-    renderMotorcycles();
-    populateMotorcycleSelect();
-    updateTotalItems();
-    
-    // Close modal and reset form
-    if (addProductModal) addProductModal.classList.add('hidden');
-    if (addProductForm) addProductForm.reset();
-    
-    // Show success notification
-    showNotification(`Success! ${formData.make} ${formData.model} has been added to inventory.`, 'success');
-}
+        // Close modal
+        closeModal.addEventListener('click', () => {
+            productModal.classList.remove('active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+        });
 
-// Show notification
-function showNotification(message, type = 'success') {
-    if (!notificationContainer) return;
-    
-    notificationContainer.innerHTML = `
-        <div class="bg-${type === 'success' ? 'success' : 'danger'} text-white px-6 py-4 rounded-lg shadow-lg flex items-center">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} text-xl mr-3"></i>
-            <div>${message}</div>
-        </div>
-    `;
-    
-    notificationContainer.classList.add('show');
-    
-    setTimeout(() => {
-        if (notificationContainer) notificationContainer.classList.remove('show');
-    }, 3000);
-}
+        // Close modal when clicking outside content
+        productModal.addEventListener('click', (e) => {
+            if (e.target === productModal) {
+                productModal.classList.remove('active');
+                document.body.style.overflow = ''; // Re-enable scrolling
+            }
+        });
 
-// Set up event listeners
-function setupEventListeners() {
-    if (!markSoldBtn) return;
-    
-    // Mark as sold button
-    markSoldBtn.addEventListener('click', () => {
-        const motoId = motorcycleSelect.value;
-        const salePrice = parseFloat(document.getElementById('sale-price').value);
-        const buyerName = document.getElementById('buyer-name').value.trim();
-        
-        if (!motoId) {
-            showNotification('Please select a motorcycle', 'danger');
-            return;
-        }
-        
-        if (!salePrice || salePrice <= 0) {
-            showNotification('Please enter a valid sale price', 'danger');
-            return;
-        }
-        
-        if (!buyerName) {
-            showNotification('Please enter buyer name', 'danger');
-            return;
-        }
-        
-        markAsSold(motoId, salePrice, buyerName);
-    });
-    
-    // Filter buttons
-    if (filterButtons.length) {
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterButtons.forEach(b => b.classList.remove('active', 'bg-primary', 'text-white'));
-                btn.classList.add('active', 'bg-primary', 'text-white');
-                
-                const filter = btn.getAttribute('data-filter');
-                renderMotorcycles(filter, searchInput.value);
+        // Mobile menu toggle
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            // Toggle menu icon
+            const menuIcon = mobileMenuButton.querySelector('svg');
+            if (mobileMenu.classList.contains('active')) {
+                menuIcon.innerHTML = '<path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />';
+            } else {
+                menuIcon.innerHTML = '<path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />';
+            }
+        });
+
+        // Filter button functionality
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                button.classList.add('active');
+                // Filter products
+                const brand = button.getAttribute('data-brand');
+                filterByBrand(brand);
             });
         });
-    }
-    
-    // Search input
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            const activeFilter = document.querySelector('.filter-btn.active');
-            const filter = activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
-            renderMotorcycles(filter, searchInput.value);
+
+        // Hero dropdown functionality
+        document.querySelectorAll('.dropdown-menu a[data-brand]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const brand = this.getAttribute('data-brand');
+                
+                // Update filter buttons
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.getAttribute('data-brand') === brand) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                filterByBrand(brand);
+            });
         });
-    }
-    
-    // Quick sell and view details buttons (delegated event)
-    document.addEventListener('click', (e) => {
-        // Quick sell buttons
-        const quickSellBtn = e.target.closest('.quick-sell-btn');
-        if (quickSellBtn) {
-            const motoId = quickSellBtn.getAttribute('data-id');
+
+        // Initially render a limited number of available products
+        const initialProducts = availableMotorcycles.slice(0, 8);
+        renderProducts(initialProducts);
+
+        // Add event listener to the "View All Motorcycles" button
+        viewAllBtn.addEventListener('click', () => {
+            renderProducts(availableMotorcycles);
+            viewAllBtn.style.display = 'none'; // Hide the button after all products are shown
             
-            // Pre-fill the form
-            motorcycleSelect.value = motoId;
-            const moto = inventoryData.motorcycles.find(m => m.motorcycleId === motoId);
-            if (moto) {
-                document.getElementById('sale-price').value = moto.priceKES;
+            // Update the title to reflect the change
+            const titleElement = document.querySelector('#Motorcycles h2');
+            if (titleElement) {
+                titleElement.textContent = "All Available Motorcycles";
             }
             
-            // Scroll to form
-            document.querySelector('#motorcycle-select').scrollIntoView({ behavior: 'smooth' });
+            // Reset filters
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.filter-button[data-brand="all"]').classList.add('active');
+        });
+        
+        // Dropdown functionality
+        document.querySelectorAll('.dropdown-toggle').forEach(button => {
+            button.addEventListener('click', function() {
+                const dropdown = this.closest('.dropdown');
+                dropdown.classList.toggle('active');
+                
+                // Close other dropdowns when one is opened
+                document.querySelectorAll('.dropdown').forEach(d => {
+                    if (d !== dropdown) {
+                        d.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+        });
+        
+        // Carousel functionality
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        const indicators = document.querySelectorAll('.indicator');
+        let currentIndex = 0;
+        
+        // Set active indicator
+        function setActiveIndicator(index) {
+            indicators.forEach((indicator, i) => {
+                if (i === index) {
+                    indicator.classList.add('active', 'bg-primary');
+                    indicator.classList.remove('bg-gray-300');
+                } else {
+                    indicator.classList.remove('active', 'bg-primary');
+                    indicator.classList.add('bg-gray-300');
+                }
+            });
         }
         
-        // View details buttons
-        const viewDetailsBtn = e.target.closest('.view-details-btn');
-        if (viewDetailsBtn) {
-            const motoId = viewDetailsBtn.getAttribute('data-id');
-            showMotorcycleDetails(motoId);
+        // Show slide by index
+        function showSlide(index) {
+            carouselItems.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+            setActiveIndicator(index);
+            currentIndex = index;
         }
-    });
-    
-    // Close modal
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            modal.classList.add('hidden');
+        
+        // Set up indicator clicks
+        indicators.forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                showSlide(index);
+            });
         });
-    }
-    
-    // Add product modal
-    if (addProductBtn) {
-        addProductBtn.addEventListener('click', () => {
-            addProductModal.classList.remove('hidden');
+        
+        // Auto-advance carousel
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % carouselItems.length;
+            showSlide(currentIndex);
+        }, 5000);
+        
+        // Initialize carousel
+        showSlide(0);
+   
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
         });
-    }
-    
-    if (closeAddModal) {
-        closeAddModal.addEventListener('click', () => {
-            addProductModal.classList.add('hidden');
-        });
-    }
-    
-    if (cancelAddBtn) {
-        cancelAddBtn.addEventListener('click', () => {
-            addProductModal.classList.add('hidden');
-        });
-    }
-    
-    // Add product form submission
-    if (addProductForm) {
-        addProductForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Get form data
-            const formData = {
-                imageUrl: document.getElementById('image-url').value,
-                make: document.getElementById('make').value.trim(),
-                model: document.getElementById('model').value.trim(),
-                year: document.getElementById('year').value.trim(),
-                engineSize: document.getElementById('engine-size').value.trim(),
-                price: document.getElementById('price').value.trim(),
-                condition: document.getElementById('condition').value,
-                location: document.getElementById('location').value.trim(),
-                isLocal: document.getElementById('is-local').checked ? 'on' : '',
-                description: document.getElementById('description').value.trim()
-            };
-            
-            // Basic validation
-            if (!formData.make || !formData.model || !formData.year || !formData.engineSize || 
-                !formData.price || !formData.condition || !formData.location || !formData.description) {
-                showNotification('Please fill in all required fields', 'danger');
-                return;
-            }
-            
-            if (isNaN(formData.year) || parseInt(formData.year) < 1900 || parseInt(formData.year) > 2030) {
-                showNotification('Please enter a valid year between 1900 and 2030', 'danger');
-                return;
-            }
-            
-            if (isNaN(formData.engineSize) || parseInt(formData.engineSize) < 50 || parseInt(formData.engineSize) > 3000) {
-                showNotification('Please enter a valid engine size between 50cc and 3000cc', 'danger');
-                return;
-            }
-            
-            if (isNaN(formData.price) || parseInt(formData.price) <= 0) {
-                showNotification('Please enter a valid price', 'danger');
-                return;
-            }
-            
-            // Add the new motorcycle
-            addNewMotorcycle(formData);
-        });
-    }
-}
 
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+        // Filter button functionality
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-button').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Filter logic would go here
+                const brand = this.getAttribute('data-brand');
+                console.log(`Filtering by brand: ${brand}`);
+            });
+        });
+         // Load header and footer when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load header from external file
+            loadExternalContent('header-container', 'header.html');
+            
+            // Load footer from external file
+            loadExternalContent('footer-container', 'footer.html');
+        });

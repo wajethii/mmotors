@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorcycle Marketplace - FAQ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#dc2626'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+        }
+        .hero-gradient {
+            background: linear-gradient(120deg, #1e3a8a 0%, #1e40af 50%, #3b82f6 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-shadow:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .faq-item {
+            border-bottom: 1px solid #e5e7eb;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            background-color: white;
+        }
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            background-color: #f9fafb;
+        }
+        .faq-item.active .faq-answer {
+            max-height: 1000px;
+            padding: 20px;
+        }
+        .faq-item.active .faq-question {
+            color: #1e40af;
+        }
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+            color: #1e40af;
+        }
+        .faq-category {
+            background-color: #1e40af;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        }
+        .search-container {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        .search-container input {
+            padding-right: 50px;
+        }
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="antialiased">
+     <!-- Header container (will be populated by JavaScript) -->
+    <div id="header-container" class="bg-white shadow-md">
+        <!-- Header content will be loaded here -->
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">
+                Frequently Asked Questions
+            </h1>
+            <p class="text-xl text-blue-100 max-w-2xl mx-auto mb-10">
+                Find answers to all your questions about buying and selling motorcycles
+            </p>
+            <div class="max-w-2xl mx-auto">
+                <div class="search-container">
+                    <input type="text" placeholder="Search for answers..." class="w-full py-4 px-6 rounded-full text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="search-icon">
+                        <i class="fas fa-search text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq-section" class="py-12 md:py-16 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Common Questions</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Browse through our comprehensive FAQ to find answers to your questions
+                </p>
+            </div>
+            
+            <!-- FAQ Categories -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <a href="#buying" class="bg-white p-6 rounded-xl card-shadow text-center hover:bg-blue-50 transition">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shopping-cart text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Buying Motorcycles</h3>
+                    <p class="text-gray-600">Questions about purchasing process</p>
+                </a>
+                
+                <a href="#selling" class="bg-white p-6 rounded-xl card-shadow text-center hover:bg-blue-50 transition">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tag text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Selling Motorcycles</h3>
+                    <p class="text-gray-600">Questions about selling process</p>
+                </a>
+                
+                <a href="#payments" class="bg-white p-6 rounded-xl card-shadow text-center hover:bg-blue-50 transition">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-credit-card text-yellow-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Payments & Financing</h3>
+                    <p class="text-gray-600">Questions about payment methods</p>
+                </a>
+                
+                <a href="#delivery" class="bg-white p-6 rounded-xl card-shadow text-center hover:bg-blue-50 transition">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-truck text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Delivery & Inspection</h3>
+                    <p class="text-gray-600">Questions about shipping and inspection</p>
+                </a>
+            </div>
+            
+            <!-- Buying Section -->
+            <div class="mb-16" id="buying">
+                <div class="faq-category">
+                    <i class="fas fa-shopping-cart mr-2"></i> Buying Motorcycles
+                </div>
+                
+                <div class="faq-list bg-white rounded-xl overflow-hidden">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How do I find the right motorcycle for me?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We recommend considering your riding experience, intended use (commuting, touring, off-road), and budget. Use our advanced search filters to narrow down options by make, model, year, price range, and features. Our team is also available for personalized recommendations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Can I test drive a motorcycle before purchasing?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, test drives are available for most motorcycles at our physical locations. For online purchases, we offer a 48-hour inspection period after delivery. During this time, you can thoroughly inspect and test the motorcycle to ensure it meets your expectations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What documents should I check before buying a used motorcycle?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Always verify the following documents:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Original logbook showing ownership transfer history</li>
+                                <li>Valid insurance certificate</li>
+                                <li>Current inspection certificate (if applicable)</li>
+                                <li>Service history records</li>
+                                <li>Clearance certificate from relevant authorities</li>
+                                <li>Seller's identification document</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Do you offer warranties on used motorcycles?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, all our certified pre-owned motorcycles come with a 6-month limited warranty that covers major mechanical components. The warranty details are provided with each motorcycle listing. For motorcycles sold "as-is", we clearly indicate this in the description.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Selling Section -->
+            <div class="mb-16" id="selling">
+                <div class="faq-category">
+                    <i class="fas fa-tag mr-2"></i> Selling Motorcycles
+                </div>
+                
+                <div class="faq-list bg-white rounded-xl overflow-hidden">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How do I sell my motorcycle through your platform?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Selling your motorcycle is simple:</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                <li>Create a seller account on our platform</li>
+                                <li>Provide details about your motorcycle (make, model, year, condition)</li>
+                                <li>Upload clear photos from multiple angles</li>
+                                <li>Set your asking price based on our valuation tool</li>
+                                <li>Schedule an inspection (optional but recommended)</li>
+                                <li>Once approved, your listing goes live</li>
+                                <li>Communicate with potential buyers through our secure messaging</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What fees are involved when selling my motorcycle?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We charge a success fee of 5% of the final sale price, which includes:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Professional photography</li>
+                                <li>Featured listing placement</li>
+                                <li>Secure payment processing</li>
+                                <li>Documentation assistance</li>
+                                <li>Marketing across our partner networks</li>
+                            </ul>
+                            <p class="mt-2">There are no upfront fees to list your motorcycle.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How long does it typically take to sell a motorcycle?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>The selling time varies based on:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Make and model popularity</li>
+                                <li>Pricing compared to market value</li>
+                                <li>Seasonal demand</li>
+                                <li>Quality of photos and description</li>
+                            </ul>
+                            <p class="mt-2">On average, well-priced motorcycles in good condition sell within 7-14 days. Our premium listings typically sell 30% faster.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Can I sell a motorcycle that still has financing?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, you can sell a motorcycle with outstanding financing, but the process requires additional steps:</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                <li>Obtain a settlement letter from your financier</li>
+                                <li>Disclose the outstanding amount to potential buyers</li>
+                                <li>At sale completion, we'll coordinate with your financier to pay off the loan</li>
+                                <li>Any surplus funds will be transferred to you</li>
+                                <li>The buyer receives a clear title once financing is settled</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Payments Section -->
+            <div class="mb-16" id="payments">
+                <div class="faq-category">
+                    <i class="fas fa-credit-card mr-2"></i> Payments & Financing
+                </div>
+                
+                <div class="faq-list bg-white rounded-xl overflow-hidden">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What payment methods do you accept?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We accept multiple secure payment methods:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Bank transfers (most common)</li>
+                                <li>Mobile money payments (M-Pesa, Airtel Money)</li>
+                                <li>Credit and debit cards (Visa, Mastercard)</li>
+                                <li>Cash payments at our verified locations</li>
+                                <li>Escrow services for high-value transactions</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Do you offer financing options?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, we partner with leading financial institutions to offer competitive financing options:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Loan amounts from Ksh 50,000 to Ksh 2,000,000</li>
+                                <li>Flexible repayment periods (6-48 months)</li>
+                                <li>Interest rates starting at 12% per annum</li>
+                                <li>Quick approval process (24-48 hours)</li>
+                                <li>Both salaried and self-employed individuals eligible</li>
+                            </ul>
+                            <p class="mt-2">Apply through our platform with minimal documentation.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How does your escrow service work?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Our escrow service protects both buyers and sellers:</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                <li>Buyer deposits payment into our secure escrow account</li>
+                                <li>Seller is notified and prepares motorcycle for delivery</li>
+                                <li>Buyer receives and inspects the motorcycle</li>
+                                <li>Once satisfied, buyer approves the release of funds</li>
+                                <li>Payment is transferred to seller within 24 hours</li>
+                                <li>If not satisfied, buyer initiates return process</li>
+                            </ol>
+                            <p class="mt-2">We charge a small fee of 1.5% for this service (min Ksh 1,500).</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Are there any hidden fees when purchasing?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We believe in transparent pricing. The listed price includes:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Our service fee</li>
+                                <li>Basic documentation processing</li>
+                                <li>Pre-sale inspection</li>
+                            </ul>
+                            <p class="mt-2">Additional costs may include:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>Delivery charges (if applicable)</li>
+                                <li>Optional extended warranty</li>
+                                <li>Financing processing fees</li>
+                                <li>Government transfer fees (typically 3-5% of value)</li>
+                            </ul>
+                            <p class="mt-2">All additional costs are clearly disclosed before you commit to purchase.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delivery Section -->
+            <div class="mb-16" id="delivery">
+                <div class="faq-category">
+                    <i class="fas fa-truck mr-2"></i> Delivery & Inspection
+                </div>
+                
+                <div class="faq-list bg-white rounded-xl overflow-hidden">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How does motorcycle delivery work?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We offer nationwide delivery through our trusted partners:</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                <li>After purchase confirmation, we coordinate delivery schedule</li>
+                                <li>Motorcycle is securely loaded onto specialized transport</li>
+                                <li>You receive tracking information and driver contact</li>
+                                <li>Delivery typically takes 1-5 business days depending on distance</li>
+                                <li>Upon arrival, you inspect and sign for receipt</li>
+                            </ol>
+                            <p class="mt-2">Delivery fees range from Ksh 2,000 to Ksh 15,000 based on distance and motorcycle size.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            What happens if I'm not satisfied after delivery?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We offer a 48-hour satisfaction guarantee:</p>
+                            <ul class="list-disc pl-5 mt-2 space-y-1">
+                                <li>If the motorcycle doesn't match the listing description</li>
+                                <li>If undisclosed mechanical issues are found</li>
+                                <li>If you change your mind (restocking fee applies)</li>
+                            </ul>
+                            <p class="mt-2">Simply contact our support team within 48 hours of delivery to initiate a return. We'll arrange pickup and process your refund within 3 business days.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            Do you provide pre-purchase inspections?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, we offer three levels of inspection:</p>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="p-4 bg-blue-50 rounded-lg">
+                                    <h4 class="font-bold text-blue-800">Basic Inspection</h4>
+                                    <p class="mt-2 text-sm">Ksh 1,500</p>
+                                    <ul class="mt-2 text-sm space-y-1">
+                                        <li>Visual assessment</li>
+                                        <li>Document verification</li>
+                                        <li>Basic functionality check</li>
+                                    </ul>
+                                </div>
+                                <div class="p-4 bg-blue-100 rounded-lg">
+                                    <h4 class="font-bold text-blue-800">Standard Inspection</h4>
+                                    <p class="mt-2 text-sm">Ksh 3,500</p>
+                                    <ul class="mt-2 text-sm space-y-1">
+                                        <li>Comprehensive mechanical check</li>
+                                        <li>Test ride by technician</li>
+                                        <li>Diagnostic scan</li>
+                                        <li>Detailed report</li>
+                                    </ul>
+                                </div>
+                                <div class="p-4 bg-blue-200 rounded-lg">
+                                    <h4 class="font-bold text-blue-800">Premium Inspection</h4>
+                                    <p class="mt-2 text-sm">Ksh 7,000</p>
+                                    <ul class="mt-2 text-sm space-y-1">
+                                        <li>Full mechanical inspection</li>
+                                        <li>Compression test</li>
+                                        <li>Frame alignment check</li>
+                                        <li>Professional valuation</li>
+                                        <li>Video walkthrough</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            How do I transfer ownership after purchase?
+                            <span class="faq-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </span>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We handle the entire ownership transfer process:</p>
+                            <ol class="list-decimal pl-5 mt-2 space-y-1">
+                                <li>Seller provides signed transfer documents</li>
+                                <li>We verify all documentation</li>
+                                <li>Submit transfer application to relevant authorities</li>
+                                <li>Pay applicable government transfer fees</li>
+                                <li>New logbook is processed within 7-10 business days</li>
+                                <li>Digital copy of new logbook sent immediately</li>
+                                <li>Physical copy mailed to your address</li>
+                            </ol>
+                            <p class="mt-2">Our transfer service fee is Ksh 2,500 which includes all processing and follow-up.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Support Section -->
+            <div class="bg-blue-50 rounded-xl p-8 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Still have questions?</h3>
+                    <p class="text-gray-600 mb-6">Our support team is ready to help you with any additional questions.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="#" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition">
+                            <i class="fas fa-comments mr-2"></i> Live Chat
+                        </a>
+                        <a href="tel:+254712345678" class="bg-white text-blue-600 font-bold py-3 px-8 rounded-lg border border-blue-600 hover:bg-blue-50 transition">
+                            <i class="fas fa-phone-alt mr-2"></i> Call +254 712 345 678
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Footer container (will be populated by JavaScript) -->
+    <div id="footer-container" class="mt-auto">
+        <!-- Footer content will be loaded here -->
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/254712345678" target="_blank" class="floating-whatsapp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+<!-- External JavaScript file -->
+    <script src="app/script.js"></script>
+    
+</body>
+</html>

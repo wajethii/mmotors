@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorcycle Inventory Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/includes/styles/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-motorcycle"></i>
+                    <h1>MotoInventory</h1>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search motorcycles...">
+                </div>
+                
+                <div class="user-actions">
+                    <div class="user-info" id="user-dropdown">
+                        <div class="user-avatar" id="user-initial">A</div>
+                        <span class="user-name" id="user-name">Admin</span>
+                        <i class="fas fa-chevron-down"></i>
+                        
+                        <div class="dropdown-menu" id="dropdown-menu">
+                            <div class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                            <div class="dropdown-item" id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Logout</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="dashboard">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h2 class="sidebar-title">
+                    <i class="fas fa-filter"></i>
+                    Filters
+                </h2>
+                
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-layer-group"></i>
+                    All Motorcycles
+                </button>
+                <button class="filter-btn" data-filter="available">
+                    <i class="fas fa-check-circle"></i>
+                    Available
+                </button>
+                <button class="filter-btn" data-filter="sold">
+                    <i class="fas fa-tag"></i>
+                    Sold
+                </button>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Products</div>
+                        <div class="stat-value" id="total-items">6</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>12% from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Available</div>
+                        <div class="stat-value">4</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>33% from last month</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Total Value</div>
+                        <div class="stat-value">KES 5.2M</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            <span>8% from last month</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Bar -->
+                <div class="action-bar">
+                    <div class="action-title">Motorcycle Inventory</div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="add-product-btn">
+                            <i class="fas fa-plus"></i>
+                            Add Product
+                        </button>
+                        <button class="btn btn-outline" id="mark-sold-btn">
+                            <i class="fas fa-tag"></i>
+                            Mark as Sold
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Motorcycle Grid -->
+                <div class="motorcycle-grid" id="motorcycle-grid">
+                    <!-- Motorcycle cards will be dynamically inserted here -->
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination" id="pagination-controls">
+                    <button class="pagination-btn" id="prev-page" disabled>
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <!-- Page buttons will be inserted here -->
+                    <button class="pagination-btn" id="next-page">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification-container"></div>
+    
+    <!-- Add Product Modal -->
+    <div class="modal" id="add-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Motorcycle</h3>
+                <button class="close-modal" id="close-add-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="add-product-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Make</label>
+                        <input type="text" class="form-control" id="make" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-control" id="model" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="number" class="form-control" id="year" required min="1900" max="2099">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Engine Size (cc)</label>
+                        <input type="number" class="form-control" id="engine-size" required min="50" max="3000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price (KES)</label>
+                        <input type="number" class="form-control" id="price" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Condition</label>
+                        <select class="form-control" id="condition" required>
+                            <option value="New">New</option>
+                            <option value="Used">Used</option>
+                            <option value="Refurbished">Refurbished</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="image-url">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="is-local"> Local Motorcycle
+                        </label>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-add">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Motorcycle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Edit Product Modal -->
+    <div class="modal" id="edit-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Motorcycle</h3>
+                <button class="close-modal" id="close-edit-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="edit-product-form">
+                <input type="hidden" id="edit-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Make</label>
+                        <input type="text" class="form-control" id="edit-make" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Model</label>
+                        <input type="text" class="form-control" id="edit-model" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="number" class="form-control" id="edit-year" required min="1900" max="2099">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Engine Size (cc)</label>
+                        <input type="number" class="form-control" id="edit-engine-size" required min="50" max="3000">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Price (KES)</label>
+                        <input type="number" class="form-control" id="edit-price" required min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Condition</label>
+                        <select class="form-control" id="edit-condition" required>
+                            <option value="New">New</option>
+                            <option value="Used">Used</option>
+                            <option value="Refurbished">Refurbished</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="edit-location" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="edit-description" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image URL</label>
+                        <input type="text" class="form-control" id="edit-image-url">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">
+                            <input type="checkbox" id="edit-is-local"> Local Motorcycle
+                        </label>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="button" class="btn btn-outline" id="cancel-edit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Motorcycle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Confirm Deletion</h3>
+                <button class="close-modal" id="close-delete-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="delete-item-name"></strong>? This action cannot be undone.</p>
+            </div>
+            <div class="form-footer">
+                <button type="button" class="btn btn-outline" id="cancel-delete">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal" id="login-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login to Inventory</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" id="login-email" value="admin@inventory.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="login-password" value="admin123">
+                </div>
+            </div>
+            <div class="form-footer">
+                <button type="button" class="btn btn-primary" id="login-btn">Login</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Authentication state management
+        let currentUser = null;
+        
+        // Sample motorcycle data
+        const motorcycles = [
+            {
+                id: 1,
+                make: "Yamaha",
+                model: "MT-07",
+                year: 2022,
+                engineSize: 689,
+                price: 850000,
+                condition: "New",
+                location: "Nairobi, Kenya",
+                description: "Powerful parallel-twin engine with agile handling. Perfect for city commuting and weekend rides.",
+                status: "available",
+                image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: true,
+                serviceHistory: [
+                    { date: "2023-01-15", service: "First service", cost: 5000 },
+                    { date: "2023-04-20", service: "Oil change", cost: 3000 }
+                ]
+            },
+            {
+                id: 2,
+                make: "Honda",
+                model: "CBR500R",
+                year: 2021,
+                engineSize: 471,
+                price: 750000,
+                condition: "Used",
+                location: "Mombasa, Kenya",
+                description: "Sporty design with comfortable ergonomics. Low mileage and well-maintained.",
+                status: "available",
+                image: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: false,
+                serviceHistory: [
+                    { date: "2022-03-10", service: "Regular maintenance", cost: 4500 },
+                    { date: "2022-09-22", service: "Brake pads replacement", cost: 3500 }
+                ]
+            },
+            {
+                id: 3,
+                make: "Suzuki",
+                model: "V-Strom 650",
+                year: 2020,
+                engineSize: 645,
+                price: 920000,
+                condition: "Used",
+                location: "Kisumu, Kenya",
+                description: "Adventure touring bike with excellent off-road capabilities. Comes with luggage rack.",
+                status: "sold",
+                image: "https://images.unsplash.com/photo-1566891439633-e183f368493b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: true,
+                serviceHistory: [
+                    { date: "2021-05-18", service: "Chain replacement", cost: 6000 },
+                    { date: "2022-01-12", service: "Full service", cost: 8000 }
+                ]
+            },
+            {
+                id: 4,
+                make: "Kawasaki",
+                model: "Ninja 400",
+                year: 2023,
+                engineSize: 399,
+                price: 780000,
+                condition: "New",
+                location: "Nakuru, Kenya",
+                description: "Lightweight sport bike perfect for beginners and experienced riders alike.",
+                status: "available",
+                image: "https://images.unsplash.com/photo-1606220588910-5a8dae9cce8f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: true,
+                serviceHistory: []
+            },
+            {
+                id: 5,
+                make: "BMW",
+                model: "R 1250 GS",
+                year: 2022,
+                engineSize: 1254,
+                price: 1850000,
+                condition: "Refurbished",
+                location: "Nairobi, Kenya",
+                description: "Premium adventure bike with advanced electronics and comfortable touring capabilities.",
+                status: "available",
+                image: "https://images.unsplash.com/photo-1558980664-2506fca6bfc2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: false,
+                serviceHistory: [
+                    { date: "2022-11-05", service: "Full electronics check", cost: 12000 }
+                ]
+            },
+            {
+                id: 6,
+                make: "Ducati",
+                model: "Monster",
+                year: 2021,
+                engineSize: 937,
+                price: 1350000,
+                condition: "Used",
+                location: "Eldoret, Kenya",
+                description: "Iconic naked bike with Italian styling and thrilling performance.",
+                status: "sold",
+                image: "https://images.unsplash.com/photo-1621372269451-1ae5b5b5f5d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80",
+                isLocal: false,
+                serviceHistory: [
+                    { date: "2022-02-14", service: "Tire replacement", cost: 15000 },
+                    { date: "2022-07-30", service: "Brake system overhaul", cost: 18000 }
+                ]
+            }
+        ];
+
+        // Pagination settings
+        const itemsPerPage = 3;
+        let currentPage = 1;
+        let currentFilter = "all";
+
+        // DOM Elements
+        const motorcycleGrid = document.getElementById('motorcycle-grid');
+        const totalItems = document.getElementById('total-items');
+        const paginationControls = document.getElementById('pagination-controls');
+        const prevPageBtn = document.getElementById('prev-page');
+        const nextPageBtn = document.getElementById('next-page');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const markSoldBtn = document.getElementById('mark-sold-btn');
+        const searchInput = document.getElementById('search-input');
+        
+        // Initialize the application
+        function initApp() {
+            // Check if user is authenticated
+            checkAuth();
+            
+            // Set total items count
+            totalItems.textContent = motorcycles.length;
+            
+            // Render motorcycle grid
+            renderMotorcycleGrid();
+            
+            // Setup event listeners
+            setupEventListeners();
+        }
+        
+        // Render motorcycle grid with pagination
+        function renderMotorcycleGrid() {
+            // Clear the grid
+            motorcycleGrid.innerHTML = '';
+            
+            // Filter motorcycles based on current filter
+            let filteredMotorcycles = motorcycles;
+            
+            if (currentFilter !== "all") {
+                filteredMotorcycles = motorcycles.filter(m => m.status === currentFilter);
+            }
+            
+            // Apply search filter if any
+            const searchTerm = searchInput.value.toLowerCase();
+            if (searchTerm) {
+                filteredMotorcycles = filteredMotorcycles.filter(m => 
+                    m.make.toLowerCase().includes(searchTerm) || 
+                    m.model.toLowerCase().includes(searchTerm) ||
+                    m.location.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredMotorcycles.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredMotorcycles.length);
+            const currentItems = filteredMotorcycles.slice(startIndex, endIndex);
+            
+            // Render motorcycle cards
+            currentItems.forEach(motorcycle => {
+                const card = document.createElement('div');
+                card.className = 'motorcycle-card';
+                card.innerHTML = `
+                    <div class="card-image" style="background-image: url('${motorcycle.image}')"></div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div>
+                                <h3 class="card-title">${motorcycle.make} ${motorcycle.model}</h3>
+                                <p class="card-subtitle">${motorcycle.year} • ${motorcycle.engineSize}cc</p>
+                            </div>
+                            <span class="status-badge ${motorcycle.status === 'available' ? 'status-available' : 'status-sold'}">
+                                ${motorcycle.status === 'available' ? 'Available' : 'Sold'}
+                            </span>
+                        </div>
+                        <div class="card-price">KES ${motorcycle.price.toLocaleString()}</div>
+                        <div class="card-footer">
+                            <div class="card-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${motorcycle.location}
+                            </div>
+                            <div class="card-actions">
+                                <button class="action-btn edit" data-id="${motorcycle.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" data-id="${motorcycle.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                motorcycleGrid.appendChild(card);
+            });
+            
+            // Render pagination controls
+            renderPaginationControls(filteredMotorcycles.length, totalPages);
+        }
+        
+        // Render pagination controls
+        function renderPaginationControls(totalItems, totalPages) {
+            // Clear existing page buttons
+            const existingPageBtns = document.querySelectorAll('.page-btn');
+            existingPageBtns.forEach(btn => btn.remove());
+            
+            // Add page buttons
+            const pageNumbersContainer = document.createElement('div');
+            pageNumbersContainer.className = 'flex';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `pagination-btn page-btn ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderMotorcycleGrid();
+                });
+                pageNumbersContainer.appendChild(pageBtn);
+            }
+            
+            // Insert page numbers between prev and next buttons
+            paginationControls.insertBefore(pageNumbersContainer, nextPageBtn);
+            
+            // Update prev/next button states
+            prevPageBtn.disabled = currentPage === 1;
+            nextPageBtn.disabled = currentPage === totalPages;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Filter buttons
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    button.classList.add('active');
+                    
+                    // Update current filter
+                    currentFilter = button.dataset.filter;
+                    currentPage = 1;
+                    
+                    // Re-render grid
+                    renderMotorcycleGrid();
+                });
+            });
+            
+            // Pagination buttons
+            prevPageBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderMotorcycleGrid();
+                }
+            });
+            
+            nextPageBtn.addEventListener('click', () => {
+                currentPage++;
+                renderMotorcycleGrid();
+            });
+            
+            // Search input
+            searchInput.addEventListener('input', () => {
+                currentPage = 1;
+                renderMotorcycleGrid();
+            });
+            
+            // Add product button
+            addProductBtn.addEventListener('click', () => {
+                if (!currentUser || currentUser.role !== 'admin') {
+                    showNotification('You need admin privileges to add products', 'warning');
+                    return;
+                }
+                document.getElementById('add-product-modal').classList.add('show');
+            });
+            
+            // Close modal buttons
+            document.getElementById('close-add-modal').addEventListener('click', () => {
+                document.getElementById('add-product-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-add').addEventListener('click', () => {
+                document.getElementById('add-product-modal').classList.remove('show');
+            });
+            
+            document.getElementById('close-edit-modal').addEventListener('click', () => {
+                document.getElementById('edit-product-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-edit').addEventListener('click', () => {
+                document.getElementById('edit-product-modal').classList.remove('show');
+            });
+            
+            document.getElementById('close-delete-modal').addEventListener('click', () => {
+                document.getElementById('delete-confirm-modal').classList.remove('show');
+            });
+            
+            document.getElementById('cancel-delete').addEventListener('click', () => {
+                document.getElementById('delete-confirm-modal').classList.remove('show');
+            });
+            
+            // Login/Register functionality
+            document.getElementById('login-btn').addEventListener('click', login);
+            document.getElementById('logout-btn').addEventListener('click', logout);
+            
+            // Add product form submission
+            document.getElementById('add-product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Create new motorcycle object
+                const newMotorcycle = {
+                    id: motorcycles.length + 1,
+                    make: document.getElementById('make').value,
+                    model: document.getElementById('model').value,
+                    year: parseInt(document.getElementById('year').value),
+                    engineSize: parseInt(document.getElementById('engine-size').value),
+                    price: parseInt(document.getElementById('price').value),
+                    condition: document.getElementById('condition').value,
+                    location: document.getElementById('location').value,
+                    description: document.getElementById('description').value,
+                    status: "available",
+                    image: document.getElementById('image-url').value || "https://via.placeholder.com/600x400?text=Motorcycle+Image",
+                    isLocal: document.getElementById('is-local').checked,
+                    serviceHistory: []
+                };
+                
+                // Add to motorcycles array
+                motorcycles.push(newMotorcycle);
+                
+                // Show success notification
+                showNotification(`${newMotorcycle.make} ${newMotorcycle.model} added successfully!`, 'success');
+                
+                // Update UI
+                totalItems.textContent = motorcycles.length;
+                renderMotorcycleGrid();
+                
+                // Reset form and close modal
+                this.reset();
+                document.getElementById('add-product-modal').classList.remove('show');
+            });
+            
+            // Edit product form submission
+            document.getElementById('edit-product-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const id = parseInt(document.getElementById('edit-id').value);
+                const index = motorcycles.findIndex(m => m.id === id);
+                
+                if (index !== -1) {
+                    // Update the motorcycle
+                    motorcycles[index] = {
+                        ...motorcycles[index],
+                        make: document.getElementById('edit-make').value,
+                        model: document.getElementById('edit-model').value,
+                        year: parseInt(document.getElementById('edit-year').value),
+                        engineSize: parseInt(document.getElementById('edit-engine-size').value),
+                        price: parseInt(document.getElementById('edit-price').value),
+                        condition: document.getElementById('edit-condition').value,
+                        location: document.getElementById('edit-location').value,
+                        description: document.getElementById('edit-description').value,
+                        image: document.getElementById('edit-image-url').value || "https://via.placeholder.com/600x400?text=Motorcycle+Image",
+                        isLocal: document.getElementById('edit-is-local').checked
+                    };
+                    
+                    // Show success notification
+                    showNotification(`${motorcycles[index].make} ${motorcycles[index].model} updated successfully!`, 'success');
+                    
+                    // Update UI
+                    renderMotorcycleGrid();
+                    
+                    // Close modal
+                    document.getElementById('edit-product-modal').classList.remove('show');
+                }
+            });
+            
+            // User dropdown
+            document.getElementById('user-dropdown').addEventListener('click', () => {
+                document.getElementById('dropdown-menu').classList.toggle('show');
+            });
+            
+            // Event delegation for edit and delete buttons
+            document.addEventListener('click', function(e) {
+                // Edit button
+                if (e.target.closest('.action-btn.edit')) {
+                    if (!currentUser || currentUser.role !== 'admin') {
+                        showNotification('You need admin privileges to edit products', 'warning');
+                        return;
+                    }
+                    
+                    const id = parseInt(e.target.closest('.action-btn').dataset.id);
+                    const motorcycle = motorcycles.find(m => m.id === id);
+                    
+                    if (motorcycle) {
+                        openEditModal(motorcycle);
+                    }
+                }
+                
+                // Delete button
+                if (e.target.closest('.action-btn.delete')) {
+                    if (!currentUser || currentUser.role !== 'admin') {
+                        showNotification('You need admin privileges to delete products', 'warning');
+                        return;
+                    }
+                    
+                    const id = parseInt(e.target.closest('.action-btn').dataset.id);
+                    const motorcycle = motorcycles.find(m => m.id === id);
+                    
+                    if (motorcycle) {
+                        openDeleteModal(motorcycle);
+                    }
+                }
+            });
+        }
+        
+        // Open edit modal with motorcycle data
+        function openEditModal(motorcycle) {
+            document.getElementById('edit-id').value = motorcycle.id;
+            document.getElementById('edit-make').value = motorcycle.make;
+            document.getElementById('edit-model').value = motorcycle.model;
+            document.getElementById('edit-year').value = motorcycle.year;
+            document.getElementById('edit-engine-size').value = motorcycle.engineSize;
+            document.getElementById('edit-price').value = motorcycle.price;
+            document.getElementById('edit-condition').value = motorcycle.condition;
+            document.getElementById('edit-location').value = motorcycle.location;
+            document.getElementById('edit-description').value = motorcycle.description;
+            document.getElementById('edit-image-url').value = motorcycle.image;
+            document.getElementById('edit-is-local').checked = motorcycle.isLocal;
+            
+            document.getElementById('edit-product-modal').classList.add('show');
+        }
+        
+        // Open delete confirmation modal
+        function openDeleteModal(motorcycle) {
+            document.getElementById('delete-item-name').textContent = `${motorcycle.make} ${motorcycle.model}`;
+            document.getElementById('delete-confirm-modal').classList.add('show');
+            
+            // Set up delete confirmation
+            document.getElementById('confirm-delete').onclick = function() {
+                const index = motorcycles.findIndex(m => m.id === motorcycle.id);
+                if (index !== -1) {
+                    const deletedMotorcycle = motorcycles.splice(index, 1)[0];
+                    showNotification(`${deletedMotorcycle.make} ${deletedMotorcycle.model} deleted successfully!`, 'success');
+                    document.getElementById('delete-confirm-modal').classList.remove('show');
+                    
+                    // Update UI
+                    totalItems.textContent = motorcycles.length;
+                    renderMotorcycleGrid();
+                }
+            };
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification-container');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Authentication functions
+        function checkAuth() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                currentUser = JSON.parse(user);
+                showApp();
+            } else {
+                document.getElementById('login-modal').classList.add('show');
+            }
+        }
+        
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                showNotification('Please enter both email and password', 'error');
+                return;
+            }
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                // Check if user exists
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    currentUser = {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role
+                    };
+                    
+                    // Store user in localStorage
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    showApp();
+                    showNotification(`Welcome back, ${user.name}!`, 'success');
+                } else {
+                    showNotification('Invalid email or password', 'error');
+                }
+            }, 500);
+        }
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            document.getElementById('login-modal').classList.add('show');
+            showNotification('You have been logged out', 'warning');
+        }
+        
+        function showApp() {
+            document.getElementById('login-modal').classList.remove('show');
+            
+            // Update UI with user info
+            if (currentUser) {
+                document.getElementById('user-initial').textContent = currentUser.name.charAt(0);
+                document.getElementById('user-name').textContent = currentUser.name;
+                
+                // Add role badge to name
+                const roleBadge = document.createElement('span');
+                roleBadge.className = `role-badge ${currentUser.role === 'admin' ? 'admin-badge' : 'viewer-badge'}`;
+                roleBadge.textContent = currentUser.role;
+                document.getElementById('user-name').appendChild(roleBadge);
+            }
+        }
+        
+        // Create a default admin user if no users exist
+        function createDefaultUser() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.length === 0) {
+                const defaultUser = {
+                    id: 1,
+                    name: "Admin",
+                    email: "admin@inventory.com",
+                    password: "admin123",
+                    role: "admin"
+                };
+                users.push(defaultUser);
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+        }
+        
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            createDefaultUser();
+            initApp();
+        });
+    </script>
+</body>
+</html>
